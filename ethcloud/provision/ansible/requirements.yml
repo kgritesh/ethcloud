@@ -1,0 +1,11 @@
+- src: https://github.com/Oefenweb/ansible-fail2ban
+  path: roles/library
+
+- src: dev-sec.ssh-hardening
+  path: roles/library
+
+- src: tersmitten.hostname
+  path: roles/library
+
+- src: https://github.com/Oefenweb/ansible-ufw
+  path: roles/library

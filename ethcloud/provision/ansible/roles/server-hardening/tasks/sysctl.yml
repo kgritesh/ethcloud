@@ -1,0 +1,5 @@
+- name: harden network with sysctl
+  template: src=sysctl_config.j2 dest=/etc/sysctl.conf
+  notify:
+    - restart sysctl
+

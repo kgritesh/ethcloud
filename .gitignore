@@ -103,3 +103,4 @@ venv.bak/
 .idea/
 build-manifest.json
 *.retry
+.ethconfig

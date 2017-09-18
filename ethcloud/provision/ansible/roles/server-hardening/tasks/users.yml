@@ -1,0 +1,51 @@
+---
+
+- name: Per-user group creation
+  group: name='{{item.group | default(item.username)}}'
+         gid='{{item.gid | default(omit)}}' state='present'
+  with_flattened:
+    - '{{default_users}}'
+    - '{{users}}'
+
+  when: ((item.name is defined and item.name and item.name != 'root') and (item.state is undefined or (item.state is defined and item.state != 'absent')))
+  tags: ['user-groups']
+
+- name: User creation
+  user: name='{{item.username}}'
+        state='{{item.state | default("present")}}'
+        group='{{item.group | default(item.username)}}'
+        password='{{item.password | default("ubuntu")}}'
+        shell='{{item.shell if item.shell is defined else users_default_shell}}'
+        comment='{{item.name}}'
+        uid='{{item.uid | default(omit)}}'
+        system='{{item.system | default(omit)}}'
+        createhome='{{item.createhome | default(users_create_homedirs if users_create_homedirs is defined else omit)}}'
+  with_flattened:
+    - '{{default_users}}'
+    - '{{users}}'
+  tags: ['user-creation']
+
+- name: Add admin_user group as NOPASSWORD sudoers
+  action: lineinfile dest=/etc/sudoers
+          line='{{item.username}} ALL=(ALL:ALL) NOPASSWD:ALL'
+          insertafter='EOF'
+          state=present
+          validate='visudo -cf %s'
+  with_flattened:
+    - '{{default_users}}'
+    - '{{users}}'
+
+  when: ((item.name is defined and item.name and item.name != 'root') and
+         (item.state is undefined or (item.state is defined and item.state != 'absent')) and
+          item.sudo_user)
+  tags: users
+
+- name: SSH keys
+  authorized_key: user='{{item.username}}' key='{{'\n'.join(item.ssh_keys) | string}}'
+  with_flattened:
+    - '{{default_users}}'
+    - '{{users}}'
+
+  when: ((item.name is defined and item.name and item.name != 'root') and
+         (item.state is undefined or (item.state is defined and item.state != 'absent')) and
+         (item.ssh_keys is defined and item.ssh_keys))

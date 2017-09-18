@@ -1,0 +1,64 @@
+---
+firewall_rules:
+  - rule: limit
+    port: 22
+    proto: tcp
+    ip: '0.0.0.0/0'
+
+  - rule: allow
+    port: 30303
+    proto: tcp
+    ip: '0.0.0.0/0'
+
+  - rule: allow
+    port: 30303
+    proto: udp
+    ip: '0.0.0.0/0'
+
+# AWS
+## Required
+aws_region: ''
+
+aws_key: ''
+
+ec2_instance_type:
+
+
+## Defaults
+ec2_ami_id: ami-099fe766
+ec2_volume_size: 100
+ec2_ssh_users: []
+ec2_instance_name: ethereum-node
+ec2_security_group_name: ethereum-node
+ec2_security_group_description: A security group for running an ethereum client
+ec2_security_group_tags:
+  - Name: '{{ec2_security_group_name}}'
+
+ec2_security_group_rules_egress:
+  - proto: all
+    from_port: all
+    to_port: all
+    cidr_ip: 0.0.0.0/0
+
+
+ec2_volume_name: '/dev/sda1'
+
+ec2_monitoring: true
+
+ec2_instance_tags:
+  Name: "{{ec2_instance_name}}"
+
+hostname_hostname: "{{ec2_instance_name}}"
+
+### GETH
+geth_user: geth
+geth_group: geth
+geth_bindir: /usr/bin
+geth_home: /opt/geth
+geth_opts:
+
+
+
+
+
+

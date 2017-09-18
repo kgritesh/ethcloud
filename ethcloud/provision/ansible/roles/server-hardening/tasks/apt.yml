@@ -1,0 +1,23 @@
+---
+- name: install apt requirements
+  apt: pkg=aptitude
+
+- name: Aptitude | Upgrade the installed packages
+  apt: upgrade=full update_cache=yes
+
+- name: Install unattended-upgrades
+  action: apt pkg=unattended-upgrades state=present
+
+- name: Adjust APT update intervals
+  action: copy src=apt_periodic.txt dest=/etc/apt/apt.conf.d/10periodic
+  tags: [apt, update_intervals]
+
+- name: Make sure unattended-upgrades only installs from $ubuntu_release-security
+  action: lineinfile dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="$ubuntu_release-updates" state=absent
+
+- name: Install list of Basic Packages
+  apt: pkg={{item}} state=latest update_cache=true cache_valid_time={{ apt_cache_valid_time }}
+  with_flattened:
+    - '{{apt_default_packages}}'
+    - '{{apt_packages}}'
+  tags: [apt, install_packages]

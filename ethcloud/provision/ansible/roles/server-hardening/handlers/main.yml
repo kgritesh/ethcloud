@@ -1,0 +1,5 @@
+---
+# handlers file for server-hardening
+
+- name: restart sysctl
+  command:  sysctl -p /etc/sysctl.conf

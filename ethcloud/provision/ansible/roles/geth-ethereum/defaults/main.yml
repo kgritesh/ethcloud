@@ -1,0 +1,6 @@
+---
+geth_user: geth
+geth_group: geth
+geth_bindir: /usr/bin
+geth_home: /opt/geth
+geth_opts:
