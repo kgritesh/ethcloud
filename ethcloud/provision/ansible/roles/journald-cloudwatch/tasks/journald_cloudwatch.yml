@@ -1,0 +1,63 @@
+---
+
+- include_role:
+    name: ansible-go
+    tags: [ansible-go]
+
+- name: UPDATE GOPATH / GOROOT for all users
+  template:
+    src: etc/profile.d/go-path.sh.j2
+    dest: /etc/profile.d/go-path.sh
+
+- name: Create journald-cloudwatch group
+  group: name="{{ journald_cloudwatch_group }}" system=yes state=present
+
+- name: Create journald-cloudwatch user
+  user: name="{{ journald_cloudwatch_user }}" state=present group="{{ journald_cloudwatch_group }}"
+
+- name: Create the go path dir to host the app
+  file:
+    path: "{{ go_path }}"
+    owner: "{{ journald_cloudwatch_user }}"
+    group: "{{ journald_cloudwatch_group }}"
+    mode: 0744
+    state: directory
+
+- name: Install the required packages for journald-cloudwatch
+  apt: pkg={{item}} state=latest update_cache=true
+  with_items: "{{ journald_cloudwatch_packages }}"
+
+
+- name: Install the journald-cloudwatch package
+  command: go get "{{journald_cloudwatch_repo}}"
+  environment:
+    GOPATH: "{{ go_path }}"
+    GOROOT: "{{ go_root }}"
+    GOBIN: "{{ go_bin }}"
+    PATH: "{{ go_bin }}:{{ go_install_bin }}:{{ ansible_env.PATH }}"
+
+- name: update configuration file - /etc/journald-cloudwatch/journald-cloudwatch.conf
+  template:
+    src: etc/journald-cloudwatch.conf.j2
+    dest: /etc/journald-cloudwatch.conf
+    owner: "{{ journald_cloudwatch_user }}"
+    group: "{{ journald_cloudwatch_group }}"
+    mode: 0644
+  tags: [journald-cloudwatch-config]
+
+- name: "journald-cloudwatch systemd service configuration file"
+  template:
+    src: etc/systemd/system/journald-cloudwatch.service.j2
+    dest: /etc/systemd/system/journald-cloudwatch.service
+    owner: "{{ journald_cloudwatch_user }}"
+    group: "{{ journald_cloudwatch_group }}"
+    mode: 0644
+  notify:
+    - reload systemd
+    - stop journald-cloudwatch
+
+- name: "journald-cloudwatch enabled"
+  service: name="journald-cloudwatch" enabled=yes state=started
+
+
+

@@ -1,0 +1,26 @@
+---
+# defaults file for journald-cloudwatch
+
+
+go_path: /opt/go/
+go_bin: /opt/go/bin
+go_root: /usr/local/go
+go_install_bin: /usr/local/go/bin
+
+journald_cloudwatch_repo: "github.com/kgritesh/systemd-cloud-watch"
+journald_cloudwatch_service: "systemd-cloud-watch"
+journald_cloudwatch_user: "cloudwatch-log"
+journald_cloudwatch_group: "cloudwatch-log"
+journald_cloudwatch_packages:
+  - gcc
+  - ca-certificates
+  - libc6-dev
+  - libsystemd-dev
+  - pkg-config
+
+cloudwatch_log_stream: "systemd-logs"
+cloudwatch_log_group: "systemd-logs"
+cloudwatch_log_priority: 6
+cloudwatch_log_buffer_size: 50
+cloudwatch_log_filters: []
+set_go_path: false

@@ -1,0 +1,6 @@
+---
+- include: journald_cloudwatch.yml
+  tags: [journald-cloudwatch]
+
+
+# tasks file for journald-cloudwatch

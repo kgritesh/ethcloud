@@ -1,4 +1,19 @@
 ---
+
+# Required
+aws_region: ''
+
+aws_key: ''
+
+ec2_instance_type:
+
+cwd: ''
+
+ec2_instance_name: ''
+
+
+# Defaults
+
 firewall_rules:
   - rule: limit
     port: 22
@@ -15,21 +30,13 @@ firewall_rules:
     proto: udp
     ip: '0.0.0.0/0'
 
-# AWS
-## Required
-aws_region: ''
 
-aws_key: ''
-
-ec2_instance_type:
-
-
-## Defaults
 ec2_ami_id: ami-099fe766
+ec2_remote_user: 'ubuntu'
 ec2_volume_size: 100
 ec2_ssh_users: []
-ec2_instance_name: ethereum-node
 ec2_security_group_name: ethereum-node
+ec2_instance_profile_name: ethereum-node
 ec2_security_group_description: A security group for running an ethereum client
 ec2_security_group_tags:
   - Name: '{{ec2_security_group_name}}'
@@ -47,8 +54,25 @@ ec2_monitoring: true
 
 ec2_instance_tags:
   Name: "{{ec2_instance_name}}"
+  Type: "Ethereum Client"
+
+
+default_iam_policies:
+  name: 'cloudwatch'
+  policy_document: '{{ cwd }}/iam_policy_cloudwatch.json'
+
+iam_policies: []
+
+iam_role_trust_policy: '{{ cwd }}/iam_role_trust_policy.json'
 
 hostname_hostname: "{{ec2_instance_name}}"
+
+
+### Systemd Cloudwatch
+set_go_path: false
+cloudwatch_log_stream: "geth"
+cloudwatch_log_group: "/aws/ec2/{{ec2_instance_name}}-logs"
+cloudwatch_log_filters: ["_SYSTEMD_UNIT=geth"]
 
 ### GETH
 geth_user: geth

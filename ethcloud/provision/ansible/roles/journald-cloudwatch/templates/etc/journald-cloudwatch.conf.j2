@@ -1,0 +1,5 @@
+log_stream="{{cloudwatch_log_stream}}"
+log_group="{{cloudwatch_log_group}}"
+log_priority="{{cloudwatch_log_priority}}"
+buffer_size="{{cloudwatch_log_buffer_size}}"
+filters={{ cloudwatch_log_filters | to_json }}

@@ -19,7 +19,7 @@ class Provisioner:
 
     DEFAULT_CONFIG_FILE = os.path.join(PROVISION_DIR, 'default.yml')
 
-    REQUIRED_PARAMS = ['aws_region', 'aws_key',
+    REQUIRED_PARAMS = ['aws_region', 'aws_key', 'ec2_instance_name',
                        'ec2_instance_type']
 
     def __init__(self, aws_config=None, **kwargs):
@@ -28,7 +28,6 @@ class Provisioner:
         for key, value in kwargs.items():
             if value:
                 self.config[key] = value
-
         self._validate_config()
 
     def _load_config(self, config_file=None):
@@ -39,9 +38,8 @@ class Provisioner:
             with open(config_file, 'r') as fl:
                 config.update(yaml.load(fl.read()))
 
+        config['cwd'] = PROVISION_DIR
         self.config = config
-
-        print('Config Parsed')
 
     def _validate_config(self):
         missing = [
@@ -58,13 +56,13 @@ class Provisioner:
         with utils.temporary_file(suffix='.json') as fl:
             fl.write(json.dumps(self.config).encode('utf-8'))
             fl.close()
-            command = ['ansible-playbook', 'launch.yml', '-i', 'inventory',
-                       '--extra-vars', '@{}'.format(fl.name)]
+            command = ['ansible-playbook', '-i', 'inventory', 'launch.yml',
+                       '--tags', 'journald-cloudwatch-config', '--extra-vars', '@{}'.format(fl.name)]
 
             if self.config.get('verbosity'):
                 command.append('-{}'.format('v' * self.config['verbosity']))
 
-            print ('Initiating a geth instance using ansible')
+            print ('Initiating a geth instance using ansible', command)
             process = Popen(command,
                             cwd=os.path.join(PROVISION_DIR, 'ansible'),
                             stdout=sys.stdout)

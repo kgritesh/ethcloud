@@ -1,0 +1,6 @@
+---
+- name: reload systemd
+  command: systemctl daemon-reload
+
+- name: stop journald-cloudwatch
+  service: name="journald-cloudwatch" state=stopped

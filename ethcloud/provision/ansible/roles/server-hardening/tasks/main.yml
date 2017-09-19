@@ -1,10 +1,10 @@
 ---
 
+- include: apt.yml
+  tags: [apt, server-hardening]
+
 - include: sysctl.yml
   tags: [sysctl, server-hardening]
-
-#- include: apt.yml
-#  tags: [apt, server-hardening]
 
 - include: users.yml
   tags: [users, server-hardening]
@@ -15,13 +15,11 @@
 
 - include_role:
     name: ansible-fail2ban
-
     tags: [fail2ban, server-hardening]
 
 - include_role:
     name: ansible-ufw
     tags: [ansible-ufw, server-hardening]
 
-- include_role:
-    name: tersmitten.hostname
-    tags: [hostname, server-hardening]
+- include: hostname.yml
+  tags: [hostname, server-hardening]

@@ -4,8 +4,8 @@
 - src: dev-sec.ssh-hardening
   path: roles/library
 
-- src: tersmitten.hostname
+- src: https://github.com/
   path: roles/library
 
-- src: https://github.com/Oefenweb/ansible-ufw
+- src: https://github.com/jlund/ansible-go
   path: roles/library

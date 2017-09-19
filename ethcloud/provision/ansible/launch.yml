@@ -36,6 +36,25 @@
         ec2_security_group_ids: "{{[security_group.group_id]}}"
       when: ec2_security_group_ids is not defined and ec2_security_groups is not defined
 
+    - name: Create / Update a new role
+      iam_role:
+        assume_role_policy_document: '{{lookup("file", iam_role_trust_policy)}}'
+        name: '{{ec2_instance_profile_name}}'
+        state: present
+      register: ec2_iam_role
+
+
+    - name: Attach the required policy
+      iam_policy:
+        iam_type: 'role'
+        iam_name: '{{ec2_instance_profile_name}}'
+        policy_name: '{{item.name}}'
+        policy_document: '{{ item.policy_document | default(omit) }}'
+        state: present
+      with_flattened:
+        - '{{default_iam_policies}}'
+        - '{{iam_policies}}'
+
     - name: Create an ec2 instance for ethereum node from ami
       local_action:
         module: ec2
@@ -44,6 +63,7 @@
         group_id: "{{ec2_security_group_ids}}"
         image: "{{ec2_ami_id}}"
         count: 1
+        instance_profile_name: '{{ec2_instance_profile_name}}'
         instance_initiated_shutdown_behavior: "{{ ec2_instance_initiated_shutdown_behavior | default(omit)}}"
         key_name: "{{aws_key}}"
         monitoring: "{{ec2_monitoring | default(omit)}}"
@@ -64,7 +84,7 @@
       with_items: "{{ ec2.instances }}"
 
     - name: Wait for SSH to come up
-      remote_user: ubuntu
+      remote_user: '{{ec2_remote_user}}'
       wait_for:
         host: "{{ item.public_dns_name }}"
         port: 22
@@ -73,19 +93,4 @@
         state: started
       with_items: "{{ ec2.instances }}"
 
-
-- name: Configure instance(s)
-  hosts: launched
-  remote_user: ubuntu
-  gather_facts: True
-  become: true
-  become_user: root
-  vars:
-      ansible_python_interpreter: '/usr/bin/python3'
-      ufw_rules: "{{firewall_rules}}"
-      users: "{{ec2_ssh_users}}"
-
-  roles:
-    - { role: server-hardening, tags: [server-hardening], become: True, become_user: root }
-    - { role: geth-ethereum, tags: [geth-ethereum] }
-
+- include: provision.yml
