@@ -1,5 +1,7 @@
 import click
+from click import pass_context
 
+from geth import GethClient
 from provision.client import Provisioner
 
 
@@ -47,6 +49,27 @@ def launch(aws_region=None, aws_key=None, ec2_ami_id=None,
                      verbosity=verbose)
 
     pr.run()
+
+@cli.command(context_settings=dict(
+    ignore_unknown_options=True,
+    allow_extra_args=True
+))
+@pass_context
+@click.option('--aws-region', type=click.STRING,
+              prompt=True,
+              help="Region where new geth instance must be launched")
+@click.option('--ec2-instance-name',
+              type=click.STRING,
+              prompt=True,
+              help="Name/Identifier for the node")
+@click.option('--remote-user',
+              type=click.STRING,
+              default="ubuntu",
+              help="Default user on the remote system")
+def logs(ctx, aws_region, ec2_instance_name, remote_user):
+    client = GethClient(aws_region=aws_region, ec2_instance_name=ec2_instance_name,
+                        remote_user=remote_user)
+    return client.logs(*ctx.args)
 
 
 if __name__ == '__main__':

@@ -57,7 +57,7 @@ class Provisioner:
             fl.write(json.dumps(self.config).encode('utf-8'))
             fl.close()
             command = ['ansible-playbook', '-i', 'inventory', 'launch.yml',
-                       '--tags', 'journald-cloudwatch-config', '--extra-vars', '@{}'.format(fl.name)]
+                       '--extra-vars', '@{}'.format(fl.name)]
 
             if self.config.get('verbosity'):
                 command.append('-{}'.format('v' * self.config['verbosity']))

@@ -1,3 +1,7 @@
 ---
 - name: Update hostname
   hostname: name="{{hostname_hostname}}"
+
+- name: Update hosts file
+  lineinfile: dest=/etc/hosts line="127.0.0.1 {{ hostname_hostname }}"
+              insertafter="^127\.0\.0\.1 localhost.*$"
