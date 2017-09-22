@@ -1,0 +1,16 @@
+- name: Insert update tunnel block in /etc/ssh_config
+  blockinfile:
+    path: ~/.ssh/config
+    create: true
+    block: |
+      Host ether-client-tunnel
+          HostName      {{ssh_tunnel_remote_host}}
+          User          {{ssh_tunnel_remote_user}}
+          Port          {{ssh_tunnel_remote_ssh_port}}
+          LocalForward   {{ssh_tunnel_local_port}} localhost:{{ssh_tunnel_forward_port}}
+          ServerAliveInterval {{ssh_tunnel_server_alive_interval}}
+          ServerAliveCountMax {{ssh_tunnel_server_alive_count_max}}
+
+
+- name: Run autossh command to setup a tunnel
+  command: autossh -M 0 -f -T -N ether-client-tunnel

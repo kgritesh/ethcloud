@@ -1,0 +1,5 @@
+---
+# tasks file for ssh-tunnel
+
+- include: ssh_tunnel.yml
+  tags: [ssh-tunnel]

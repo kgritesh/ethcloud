@@ -8,7 +8,7 @@ from subprocess import Popen
 
 import boto3
 
-from errors import NoClientFound
+from errors import ClientNotFound
 
 
 class GethClient:
@@ -39,7 +39,7 @@ class GethClient:
         )
 
         if not instances:
-            raise NoClientFound(self.ec2_instance_name)
+            raise ClientNotFound(self.ec2_instance_name)
 
         return instances[0].public_ip_address
 

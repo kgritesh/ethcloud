@@ -1,0 +1,21 @@
+---
+
+- name: Create / Update a new role
+  iam_role:
+    name: '{{lookup("file", ec2_instance_profile_name)}}'
+    state: present
+  register: ec2_iam_role
+
+
+- name: Attach the required policy
+  iam_policy:
+    iam_type: 'role'
+    iam_name: '{{ec2_instance_profile_name}}'
+    policy_name: '{{item.name}}'
+    policy_document: '{{ item.policy_document | default(omit) }}'
+    policy_json: '{{ item.policy_json | default(omit) }}'
+  with_flattened:
+    - '{{aws_default_iam_policies}}'
+    - '{{aws_iam_policies}}'
+
+

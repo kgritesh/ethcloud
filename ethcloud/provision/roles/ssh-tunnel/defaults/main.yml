@@ -1,0 +1,9 @@
+---
+# defaults file for ssh-tunnel
+ssh_tunnel_remote_ssh_port: 22
+
+ssh_tunnel_server_alive_interval: 30
+
+ssh_tunnel_server_alive_count_max: 3
+
+

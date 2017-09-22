@@ -1,0 +1,29 @@
+provision_dir: ''
+
+firewall_rules:
+  - rule: limit
+    port: 22
+    proto: tcp
+    ip: '0.0.0.0/0'
+
+  - rule: allow
+    port: 30303
+    proto: tcp
+    ip: '0.0.0.0/0'
+
+  - rule: allow
+    port: 30303
+    proto: udp
+    ip: '0.0.0.0/0'
+
+geth_user: geth
+geth_group: geth
+geth_bindir: /usr/bin
+geth_home: /opt/geth
+geth_opts:
+
+hostname_hostname: '{{instance_name}}'
+
+ssh_tunnel_remote_user: '{{remote_user}}'
+ssh_tunnel_local_port: '8545'
+ssh_tunnel_forward_port: '8545'

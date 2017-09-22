@@ -1,0 +1,26 @@
+- name: Configure instance(s)
+  hosts: ethereum_nodes
+  remote_user: '{{ec2_remote_user}}'
+  gather_facts: True
+  become: true
+  become_user: root
+  vars:
+      ansible_python_interpreter: '/usr/bin/python3'
+      ufw_rules: "{{firewall_rules}}"
+      users: "{{ec2_ssh_users}}"
+
+  roles:
+    - { role: server-hardening, tags: [server-hardening], become: True, become_user: root }
+    - { role: geth-ethereum, tags: [geth-ethereum] }
+    - { role: journald-cloudwatch, tags: [journald-cloudwatch] }
+
+- name: Setup a local ssh tunnel
+  hosts: localhost
+  vars:
+    ssh_tunnel_remote_host: "{{ item }}"
+  tasks:
+    - name: 'Set a local ssh tunnel'
+      with_items: "{{groups['ethereum_nodes']}}"
+      include_role:
+         name: ssh-tunnel
+      tags: [ssh-tunnel]
