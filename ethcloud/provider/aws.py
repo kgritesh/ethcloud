@@ -33,7 +33,7 @@ class AWSCloudProvider(CloudProvider):
     def get_public_ip(self):
         instance = self.get_instance()
         if not instance:
-            raise ClientNotFound(self.config.ec2_instance_name)
+            raise ClientNotFound(self.config.instance_name)
         return instance.public_ip_address
 
     @required_config('ec2_instance_type', 'aws_key')

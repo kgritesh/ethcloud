@@ -35,6 +35,8 @@ class Engine(object):
 
     ACCOUNT_COMMAND = 'geth account {}'
 
+    EXPORT_COMMAND = 'geth export {}'
+
     INVENTORY = """
         [ethereum_nodes]
         {}
@@ -94,13 +96,6 @@ class Engine(object):
         self.update_client_options(client_options)
         self.update_instance('--tags', 'geth-systemd-config')
 
-    def logs(self, *args):
-        remote_command = '{} {}'.format(self.LOG_COMMAND, ' '.join(args))
-        return self._run_ssh_command(remote_command)
-
-    def attach(self):
-        return self._run_ssh_command(self.ATTACH_COMMAND)
-
     def stop(self):
         return self._run_ssh_command(self.STOP_COMMAND)
 
@@ -119,8 +114,44 @@ class Engine(object):
 
             return self._run_provision_command(commands)
 
-    def account(self, command):
-        return self._run_ssh_command(self.ACCOUNT_COMMAND.format(command))
+    def logs(self, *args):
+        return self._run_ssh_command(self.LOG_COMMAND, *args)
+
+    def attach(self, *client_options):
+        return self._run_ssh_command(self.ATTACH_COMMAND, *client_options)
+
+    def export(self, filepath, *client_options,
+               first_block=None, last_block=None):
+
+        self.update_client_options(client_options)
+        remote_path = self._temp_path()
+
+        export_command = self.EXPORT_COMMAND.format(remote_path)
+        if first_block:
+            export_command += ' {}'.format(first_block)
+
+        if last_block:
+            export_command += ' {}'.format(last_block)
+
+        self._run_ssh_command(export_command, *client_options)
+        self._scp_from(remote_path, filepath)
+
+    def list_accounts(self, *client_options):
+        return self._account_command('list', *client_options)
+
+    def create_account(self, *client_options):
+        return self._account_command('new', *client_options)
+
+    def update_account(self, address, *client_options):
+        return self._account_command('update', address, *client_options)
+
+    def import_account(self, keyfile, *client_options):
+        remote_path = self._temp_path()
+        self._scp_to(keyfile, remote_path)
+        self._account_command('import', remote_path, *client_options)
+
+    def _account_command(self, command, *args):
+        return self._run_ssh_command(self.ACCOUNT_COMMAND.format(command), *args)
 
     @contextmanager
     def _temporary_inventory(self):
@@ -141,10 +172,35 @@ class Engine(object):
             process = Popen(commands, cwd=constants.PROVISION_DIR, stdout=sys.stdout)
             return process.communicate()
 
-    def _run_ssh_command(self, remote_command, shell=False):
+    def _run_ssh_command(self, remote_command, *client_options):
         public_ip = self.provider.get_public_ip()
         commands = ['ssh', '{}@{}'.format(self.config.remote_user, public_ip),
-                    '-o', 'StrictHostKeyChecking=no',
-                    remote_command]
-        process = Popen(commands, stdout=sys.stdout, shell=shell)
+                    '-o', 'StrictHostKeyChecking=no', remote_command]
+
+        commands.extend(client_options)
+        process = Popen(commands, stdout=sys.stdout)
         return process.communicate()
+
+    def _scp_from(self, from_path, to_path):
+        public_ip = self.provider.get_public_ip()
+
+        commands = [
+            'scp', '-o', 'StrictHostKeyChecking=no',
+            '{}@{}:{}'.format(self.config.remote_user, public_ip, from_path),
+            to_path
+        ]
+        process = Popen(commands, stdout=sys.stdout)
+        return process.communicate()
+
+    def _scp_to(self, from_path, to_path):
+        public_ip = self.provider.get_public_ip()
+        commands = [
+            'scp', '-o', 'StrictHostKeyChecking=no',
+            from_path,
+            '{}@{}:{}'.format(self.config.remote_user, public_ip, to_path),
+        ]
+        process = Popen(commands, stdout=sys.stdout)
+        return process.communicate()
+
+    def _temp_path(self):
+        return '/tmp/{}'.format(utils.random_string(10))

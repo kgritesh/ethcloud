@@ -5,6 +5,8 @@ from __future__ import division
 
 import importlib
 import os
+import random
+import string
 import tempfile
 from contextlib import contextmanager
 
@@ -35,6 +37,11 @@ def any_one(*args):
     """
     i = iter(args)
     return any(i) and not any(i)
+
+
+def random_string(length, letters=None):
+    letters = letters or string.ascii_lowercase + string.digits
+    return ''.join(random.choice(letters) for i in range(length))
 
 
 def import_class(cls_path):
