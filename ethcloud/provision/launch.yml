@@ -29,8 +29,6 @@
       register: security_group
       when: ec2_security_group_ids is not defined and ec2_security_groups is not defined
 
-    - debug: var=security_group
-
     - name: Register ec2_security_groups
       set_fact:
         ec2_security_group_ids: "{{[security_group.group_id]}}"

@@ -14,6 +14,7 @@ import sys
 import logging
 
 import constants
+from errors import ClientNotFound
 from provider.base import CloudProvider
 from utils import utils
 from utils.utils import VerbosityFilter
@@ -102,6 +103,21 @@ class Engine(object):
 
     def stop(self):
         return self._run_ssh_command(self.STOP_COMMAND)
+
+    def delete(self, **kwargs):
+        instance = self.provider.get_instance()
+        if not instance:
+            raise ClientNotFound(self.provider.config.instance_name)
+
+        kwargs['delete_instance_ids'] = [instance.instance_id]
+        self.provider.config.update(**kwargs)
+        with self._temporary_inventory() as tf:
+            commands = ['ansible-playbook', '-i', tf.name, 'delete.yml']
+            self.logger.info('Delete an existing instance: {} on {}'.format(
+                self.config.instance_name, self.config.provider
+            ))
+
+            return self._run_provision_command(commands)
 
     def account(self, command):
         return self._run_ssh_command(self.ACCOUNT_COMMAND.format(command))

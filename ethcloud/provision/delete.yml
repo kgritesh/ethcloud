@@ -1,0 +1,24 @@
+- name: Delete Ethereum Client Node
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - name: Terminate ethereum node
+      ec2:
+        state: 'absent'
+        region: "{{aws_region}}"
+        instance_ids: '{{ delete_instance_ids }}'
+
+    - name: Delete Ethereum Client Role
+      iam_role:
+        state: 'absent'
+        name: '{{ec2_instance_profile_name}}'
+      when: delete_iam_role
+
+    - name: Delete Ethereum Node Securty Group
+      ec2_group:
+        state: 'absent'
+        name: "{{ ec2_security_group_name  }}"
+      when: delete_security_group
+
+

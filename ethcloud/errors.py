@@ -6,9 +6,9 @@ from __future__ import division
 
 class ClientNotFound(Exception):
 
-    def __init__(self, ec2_instance_name):
+    def __init__(self, instance_name):
         super(ClientNotFound, self).__init__(
-            'No ethereum node found with name: {}'.format(ec2_instance_name))
+            'No ethereum node found with name: {}'.format(instance_name))
 
 
 class ProviderNotSupported(Exception):

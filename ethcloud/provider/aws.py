@@ -17,12 +17,6 @@ class AWSCloudProvider(CloudProvider):
     DEFAULT_REQUIRED = ['instance_name', 'aws_region']
 
     def get_instance(self):
-        self.logger.info(
-            'Checking if an existing instance exists with '
-            'the same name: {}'.format(
-                self.config.instance_name)
-        )
-
         ec2 = boto3.resource('ec2', region_name=self.config['aws_region'])
         instances = list(
             ec2.instances.filter(Filters=[{
