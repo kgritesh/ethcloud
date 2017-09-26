@@ -6,7 +6,7 @@ from __future__ import print_function
 
 import os
 
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 
 PROVISION_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
