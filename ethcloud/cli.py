@@ -12,7 +12,7 @@ from core import Engine
 
 
 @click.group()
-@click.version_option(VERSION, prog_name="ethcloud")
+@click.version_option(prog_name="ethcloud")
 def cli():
     """
     A tool to launch and interface with a ethereum client running on a remote instance

@@ -1,15 +1,29 @@
 """
  A cli tool too launch, manage and use ethereum client on the cloud
 """
+import os
+import sys
 from setuptools import find_packages, setup
 
+version = '0.0.0'
 dependencies = ['click', 'ansible', 'PyYaml', 'boto3']
+
+if sys.argv[-1] == 'tag':
+    os.system("git tag -a %s -m 'version %s'" % (version, version))
+    os.system("git push origin master --tags")
+    sys.exit()
+
+if sys.argv[-1] == 'publish':
+    os.system("python setup.py sdist upload")
+    os.system("python setup.py bdist_wheel upload")
+    sys.exit()
+
 
 setup(
     name='ethcloud',
-    version='0.0.1',
+    version=version,
     url='https://github.com/kgritesh/ethcloud',
-    license='BSD',
+    license='MIT',
     author='Ritesh Kadmawala',
     author_email='k.g.ritesh@gmail.com',
     description=' A cli tool too launch, manage and use ethereum client on the cloud',
@@ -26,16 +40,10 @@ setup(
     },
     classifiers=[
         # As from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-        # 'Development Status :: 1 - Planning',
-        # 'Development Status :: 2 - Pre-Alpha',
-        # 'Development Status :: 3 - Alpha',
         'Development Status :: 4 - Beta',
-        # 'Development Status :: 5 - Production/Stable',
-        # 'Development Status :: 6 - Mature',
-        # 'Development Status :: 7 - Inactive',
         'Environment :: Console',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: POSIX',
         'Operating System :: MacOS',
         'Operating System :: Unix',
