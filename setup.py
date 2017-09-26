@@ -5,7 +5,7 @@ import os
 import sys
 from setuptools import find_packages, setup
 
-version = '0.0.0'
+version = '0.1.0'
 dependencies = ['click', 'ansible', 'PyYaml', 'boto3']
 
 if sys.argv[-1] == 'tag':
