@@ -10,7 +10,7 @@ Here are [installation instructions](https://github.com/mitsuhiko/pipsi#readme).
 
 Simply run:
 
-    $ pipsi install .
+    $ pipsi install ethcloud
 
 
 # Usage

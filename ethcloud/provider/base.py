@@ -10,15 +10,15 @@ from abc import ABCMeta
 import six
 from attrdict import AttrDict
 
-import constants
-from errors import ProviderNotSupported
-from utils import utils
+from ethcloud import constants
+from ethcloud.errors import ProviderNotSupported
+from ethcloud.utils import utils
 
 
 @six.add_metaclass(ABCMeta)
 class CloudProvider(object):
     SUPPORTED_PROVIDERS = {
-        'aws': 'provider.aws.AWSCloudProvider'
+        'aws': 'ethcloud.provider.aws.AWSCloudProvider'
     }
 
     DEFAULT_REQUIRED = ['instance_name', 'remote_user']

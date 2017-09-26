@@ -8,7 +8,7 @@ from subprocess import Popen
 
 import boto3
 
-from errors import ClientNotFound
+from .errors import ClientNotFound
 
 
 class GethClient:

@@ -6,9 +6,9 @@ from __future__ import print_function
 
 import boto3
 
-from decorators import required_config
-from errors import DuplicateNode, ClientNotFound
-from provider.base import CloudProvider
+from ethcloud.decorators import required_config
+from ethcloud.errors import DuplicateNode, ClientNotFound
+from ethcloud.provider.base import CloudProvider
 
 
 class AWSCloudProvider(CloudProvider):
@@ -39,5 +39,5 @@ class AWSCloudProvider(CloudProvider):
     @required_config('ec2_instance_type', 'aws_key')
     def validate_launch(self, *client_options):
         if self.get_instance():
-            raise DuplicateNode(self.config.ec2_instance_name)
+            raise DuplicateNode(self.config.instance_name)
         return True

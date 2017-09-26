@@ -6,7 +6,7 @@ from __future__ import print_function
 
 import functools
 
-from errors import MissingRequiredParams
+from .errors import MissingRequiredParams
 
 
 def required_config(*params):

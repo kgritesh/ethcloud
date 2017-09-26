@@ -13,11 +13,11 @@ import sys
 
 import logging
 
-import constants
-from errors import ClientNotFound
-from provider.base import CloudProvider
-from utils import utils
-from utils.utils import VerbosityFilter
+from . import constants
+from .errors import ClientNotFound
+from .provider.base import CloudProvider
+from .utils import utils
+from .utils.utils import VerbosityFilter
 
 
 class Engine(object):
@@ -120,9 +120,9 @@ class Engine(object):
     def attach(self, *client_options):
         return self._run_ssh_command(self.ATTACH_COMMAND, *client_options)
 
-    def export(self, filepath, *client_options,
-               first_block=None, last_block=None):
-
+    def export(self, filepath, *client_options, **kwargs):
+        first_block = kwargs.get('first_block')
+        last_block = kwargs.get('last_block')
         self.update_client_options(client_options)
         remote_path = self._temp_path()
 

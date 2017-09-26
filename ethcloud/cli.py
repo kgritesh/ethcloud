@@ -7,12 +7,12 @@ from __future__ import print_function
 import click
 
 # Hack becaue the module name is __main__ and not ethcloud.
-from constants import VERSION
-from core import Engine
+from .constants import VERSION
+from .core import Engine
 
 
 @click.group()
-@click.version_option(prog_name="ethcloud")
+@click.version_option(version=VERSION, prog_name="ethcloud")
 def cli():
     """
     A tool to launch and interface with a ethereum client running on a remote instance

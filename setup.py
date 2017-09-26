@@ -3,10 +3,23 @@
 """
 import os
 import sys
+
+import re
 from setuptools import find_packages, setup
 
-version = '0.1.0'
-dependencies = ['click', 'ansible', 'PyYaml', 'boto3']
+
+def find_version():
+    with open('ethcloud/constants.py') as fl:
+        content = fl.read()
+        version_match = re.search(r"^VERSION = ['\"]([^'\"]*)['\"]",
+                                  content, re.M)
+        if version_match:
+            return version_match.group(1)
+        raise RuntimeError("Unable to find version string.")
+
+
+version = find_version()
+dependencies = ['click', 'ansible', 'PyYaml', 'boto3', 'attrdict']
 
 if sys.argv[-1] == 'tag':
     os.system("git tag -a %s -m 'version %s'" % (version, version))
@@ -35,7 +48,7 @@ setup(
     install_requires=dependencies,
     entry_points={
         'console_scripts': [
-            'ethcloud = ethcloud.cli:main',
+            'ethcloud = ethcloud:cli',
         ],
     },
     classifiers=[
