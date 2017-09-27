@@ -141,6 +141,10 @@ def start(ctx, cloud_config):
 
 @cli.group()
 def account():
+    """
+    Manage accounts, list all existing accounts, import a private key into a new
+    account, create a new account or update an existing account.
+    """
     pass
 
 
@@ -153,6 +157,9 @@ def account():
 @config_option
 @click.pass_context
 def list_accounts(ctx, cloud_config):
+    """
+    List existing accounts
+    """
     engine = Engine(cloud_config_file=cloud_config)
     engine.list_accounts(*ctx.args)
 
@@ -167,6 +174,9 @@ def list_accounts(ctx, cloud_config):
 @click.argument('address', type=click.STRING, required=True)
 @click.pass_context
 def update_account(ctx, cloud_config, address):
+    """
+    Update account password
+    """
     engine = Engine(cloud_config_file=cloud_config)
     engine.update_account(address, *ctx.args)
 
@@ -180,6 +190,9 @@ def update_account(ctx, cloud_config, address):
 @click.pass_context
 @config_option
 def create_account(ctx, cloud_config):
+    """
+    Create a new account
+    """
     engine = Engine(cloud_config_file=cloud_config)
     engine.create_account(*ctx.args)
 
@@ -194,6 +207,9 @@ def create_account(ctx, cloud_config):
 @click.argument('keyfile', type=click.Path(exists=True), required=True)
 @config_option
 def import_account(ctx, cloud_config, keyfile):
+    """
+    Imports an unencrypted private key from <keyfile> and creates a new account.
+    """
     engine = Engine(cloud_config_file=cloud_config)
     engine.import_account(keyfile, *ctx.args)
 

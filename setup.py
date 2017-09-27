@@ -18,8 +18,16 @@ def find_version():
         raise RuntimeError("Unable to find version string.")
 
 
+def get_description():
+    try:
+        import pypandoc
+        return pypandoc.convert('README.md', 'rst')
+    except (IOError, ImportError):
+        return 'A cli tool too launch, manage and use ethereum client on the cloud'
+
 version = find_version()
 dependencies = ['click', 'ansible', 'PyYaml', 'boto3', 'attrdict']
+description = get_description()
 
 if sys.argv[-1] == 'tag':
     os.system("git tag -a %s -m 'version %s'" % (version, version))
@@ -62,8 +70,11 @@ setup(
         'Operating System :: Unix',
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ]
 )
