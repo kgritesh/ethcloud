@@ -1,12 +1,9 @@
 # ethcloud
 
 [<img src="https://img.shields.io/pypi/v/ethcloud.svg">](https://pypi.python.org/pypi/ethcloud)
-
-[<img src=" https://img.shields.io/pypi/l/ethcloud.svg">](https://pypi.python.org/pypi/ethcloud)
-
-[<img src=" https://img.shields.io/pypi/pyversions/ethcloud.svg">](https://pypi.python.org/pypi/ethcloud)
-
-[<img src=" https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg">](https://saythanks.io/to/kgritesh)
+[<img src="https://img.shields.io/pypi/l/ethcloud.svg">](https://pypi.python.org/pypi/ethcloud)
+[<img src="https://img.shields.io/pypi/pyversions/ethcloud.svg">](https://pypi.python.org/pypi/ethcloud)
+[<img src="https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg">](https://saythanks.io/to/kgritesh)
 
 
  A cli tool to launch, use and manange an ethereum client on the cloud. Under the 
@@ -223,18 +220,18 @@ google cloud platform / azure etc
 
 ## Contributing
 
-####Feature Requests
+#### Feature Requests
 
 I'm always looking for suggestions to improve this project. If you have a
 suggestion for improving an existing feature, or would like to suggest a
 completely new feature, please file an issue with my
 [Github repository](https://github.com/loanzen/falcon-auth/issues>)
 
-####Bug Reports
+#### Bug Reports
 
 You may file bug reports on [Github Issues](https://github.com/loanzen/falcon-auth/issues>)
 
-####Pull Requests
+#### Pull Requests
 
 Along with my desire to hear your feedback and suggestions,
 I'm also interested in accepting direct assistance in the form of new code or documentation.
